@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 
+#Import Sistema Operativo para imagenes
+import os
+
+#Requerido para obtener variables de .env
+from decouple import config, Csv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,17 +26,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-z3ql+vrydw7mddem)xcc%@c87=-r%kib-v1x)(m&-l=xnrn)%3'
+SECRET_KEY = config("SECRET_KEY")
+#'django-insecure-z3ql+vrydw7mddem)xcc%@c87=-r%kib-v1x)(m&-l=xnrn)%3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = config("HOSTS", cast=Csv())
 
 # Application definition
 
 INSTALLED_APPS = [
+
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -75,8 +83,12 @@ WSGI_APPLICATION = 'SEFOET2.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASS'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
     }
 }
 
@@ -103,7 +115,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+#Se cambia a español por default
+LANGUAGE_CODE = 'es-MX'
 
 TIME_ZONE = 'UTC'
 
@@ -119,7 +132,26 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+if DEBUG:
+    STATICFILES_DIRS = [BASE_DIR / 'static',]
+    #otra forma de hacerlo es:
+    #STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+#Archivos multimedia staticos
+MEDIA_URL = "/media/"
+
+#Archivos multimedia dinámicos
+MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#reCaptcha SecretKey
+GOOGLE_RECAPTCHA_SECRET_KEY = config("GOOGLE_RECAPTCHA_SECRET_KEY")
+
+#
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+DEFAULT_FILTER_BACKENDS: ['django_filters.rest_framework.DjangoFilterBackend', 'rest_framework.FilterSet']
