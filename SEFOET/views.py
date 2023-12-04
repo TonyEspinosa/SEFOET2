@@ -33,11 +33,7 @@ def v_list(request, pk_cat):
 # View PDF file
 def v_ViewPDF(request, pk_prov):
     qProvID = m_proveedor.objects.get(id_proveedor = pk_prov)
-    print('1')
-    print(qProvID)
     context = {'proveedor':qProvID}
-    print('2')
-    print(context)
     pdf = render_to_pdf('public/public_print_pdf.html', context)
     if pdf:
         response = HttpResponse(pdf, content_type='application/pdf')
