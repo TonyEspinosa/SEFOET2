@@ -1,0 +1,29 @@
+{% extends 'inicio.html' %}
+{% load static %}
+
+{# TODO: Register crispy_forms_tags #}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row">
+    <div class="col-6">
+        <div class="card-body">
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <br>
+                <p>Los campos deben ser llenados con mayúsculas y minúsculas</p>
+                <br>
+
+                {{ form | crispy }}
+
+                <br>
+                <p>Los campos con * son obligatorios</p>
+                <br>
+                <a class="btn btn-warning" href="{% url 'u_prov_list' %}">Cancelar</a>
+                <input type="submit" class="btn btn-primary" name="Guardar Proveedor" value="Guardar">
+                <p> </p>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
